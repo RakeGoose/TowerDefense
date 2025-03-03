@@ -8,25 +8,35 @@ public class EnemyLogic : MonoBehaviour
     List<GameObject> wayPoints = new List<GameObject>();
 
     int wayIndex = 0;
-    int speed = 10;
+    public int speed = 10;
+    int health = 30;
 
     private void Start()
     {
-        wayPoints = GameObject.Find("Main Camera").GetComponent<gameController>().wayPoints;
+        GetWaypoints();
     }
 
     void Update()
     {
         Move();
+        CheckIsAlive();
+    }
+
+    void GetWaypoints()
+    {
+        wayPoints = GameObject.Find("LevelGroup").GetComponent<LevelManager>().wayPoints;
     }
 
     private void Move()
     {
-        Vector3 dir = wayPoints[wayIndex].transform.position - transform.position;
+        Transform currWayPoint = wayPoints[wayIndex].transform;
+        Vector3 currWayPos = new Vector3(currWayPoint.position.x + currWayPoint.GetComponent<SpriteRenderer>().bounds.size.x / 2, currWayPoint.position.y - currWayPoint.GetComponent<SpriteRenderer>().bounds.size.y / 2);
+
+        Vector3 dir = currWayPos - transform.position;
 
         transform.Translate(dir.normalized * Time.deltaTime * speed);
 
-        if(Vector3.Distance(transform.position, wayPoints[wayIndex].transform.position) < 0.3f)
+        if(Vector3.Distance(transform.position, currWayPos) < 0.1f)
         {
             if(wayIndex < wayPoints.Count - 1)
             {
@@ -36,6 +46,19 @@ public class EnemyLogic : MonoBehaviour
             {
                 Destroy(gameObject);
             }
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+    }
+
+    void CheckIsAlive()
+    {
+        if(health <= 0)
+        {
+            Destroy(gameObject);
         }
     }
 }
