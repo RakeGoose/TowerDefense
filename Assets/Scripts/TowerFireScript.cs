@@ -4,28 +4,32 @@ using UnityEngine;
 
 public class TowerFireScript : MonoBehaviour
 {
-    float range = 2;
-    public float CurrCooldown;
-    public float Cooldown;
-
     public GameObject Projectile;
+    Tower selfTower;
+    public TowerType selfType;
+    
+    gameController gcontroller;
+
+    private void Start()
+    {
+        gcontroller = FindObjectOfType<gameController>();
+
+        selfTower = gcontroller.AllTowers[(int)selfType];
+        GetComponent<SpriteRenderer>().sprite = selfTower.Spr;
+
+        InvokeRepeating("SearchTarget", 0, .1f);
+    }
 
     private void Update()
     {
-        if (CanShoot())
-        {
-            SearchTarget();
-        }
-
-        if(CurrCooldown > 0)
-        {
-            CurrCooldown -= Time.deltaTime;
-        }
+        if(selfTower.currCooldown > 0)
+            selfTower.currCooldown -= Time.deltaTime;
+        
     }
 
     bool CanShoot()
     {
-        if(CurrCooldown <= 0)
+        if(selfTower.currCooldown <= 0)
         {
             return true;
         }
@@ -34,32 +38,34 @@ public class TowerFireScript : MonoBehaviour
 
     void SearchTarget()
     {
-        Transform nearestEnemy = null;
-        float nearestEnemyDistance = Mathf.Infinity;
-
-        foreach(GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+        if (CanShoot())
         {
-            float currDistance = Vector2.Distance(transform.position, enemy.transform.position);
+            Transform nearestEnemy = null;
+            float nearestEnemyDistance = Mathf.Infinity;
 
-            if(currDistance < nearestEnemyDistance &&
-               currDistance <= range)
+            foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
             {
-                nearestEnemy = enemy.transform;
-                nearestEnemyDistance = currDistance;
-            }
-        }
+                float currDistance = Vector2.Distance(transform.position, enemy.transform.position);
 
-        if(nearestEnemy != null)
-        {
-            Shoot(nearestEnemy);
+                if (currDistance < nearestEnemyDistance &&
+                   currDistance <= selfTower.range)
+                {
+                    nearestEnemy = enemy.transform;
+                    nearestEnemyDistance = currDistance;
+                }
+            }
+
+            if (nearestEnemy != null)
+                Shoot(nearestEnemy);
         }
     }
 
     void Shoot(Transform enemy)
     {
-        CurrCooldown = Cooldown;
+        selfTower.currCooldown = selfTower.Cooldown;
 
         GameObject proj = Instantiate(Projectile);
+        proj.GetComponent<TowerFireProjectile>().selfTower = selfTower;
         proj.transform.position = transform.position;
         proj.GetComponent<TowerFireProjectile>().SetTarget(enemy);
     }

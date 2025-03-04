@@ -8,18 +8,18 @@ public class EnemyLogic : MonoBehaviour
     List<GameObject> wayPoints = new List<GameObject>();
 
     int wayIndex = 0;
-    public int speed = 10;
-    int health = 30;
+    public Enemy selfEnemy;
 
     private void Start()
     {
         GetWaypoints();
+
+        GetComponent<SpriteRenderer>().sprite = selfEnemy.Spr;
     }
 
     void Update()
     {
         Move();
-        CheckIsAlive();
     }
 
     void GetWaypoints()
@@ -34,7 +34,7 @@ public class EnemyLogic : MonoBehaviour
 
         Vector3 dir = currWayPos - transform.position;
 
-        transform.Translate(dir.normalized * Time.deltaTime * speed);
+        transform.Translate(dir.normalized * Time.deltaTime * selfEnemy.Speed);
 
         if(Vector3.Distance(transform.position, currWayPos) < 0.1f)
         {
@@ -49,16 +49,49 @@ public class EnemyLogic : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
-        health -= damage;
+        selfEnemy.Health -= damage;
+        CheckIsAlive();
     }
 
     void CheckIsAlive()
     {
-        if(health <= 0)
+        if(selfEnemy.Health <= 0)
         {
             Destroy(gameObject);
+        }
+    }
+
+    public void StartSlow(float duration, float slowValue)
+    {
+        StopCoroutine("GetSlow");
+        selfEnemy.Speed = selfEnemy.StartSpeed;
+        StartCoroutine(GetSlow(duration, slowValue));
+    }
+
+    IEnumerator GetSlow(float duration, float slowValue)
+    {
+        selfEnemy.Speed -= slowValue;
+        yield return new WaitForSeconds(duration);
+        selfEnemy.Speed = selfEnemy.StartSpeed;
+    }
+
+    public void AOEDamage(float range, float damage)
+    {
+        List<EnemyLogic> enemies = new List<EnemyLogic>();
+
+        foreach(GameObject go in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            if(Vector2.Distance(transform.position, go.transform.position) <= range)
+            {
+                enemies.Add(go.GetComponent<EnemyLogic>());
+            }
+        }
+
+        foreach(EnemyLogic es in enemies)
+        {
+            es.TakeDamage(damage);
         }
     }
 }

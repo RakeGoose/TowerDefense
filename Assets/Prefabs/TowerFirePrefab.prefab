@@ -97,6 +97,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4764736c1f2c84206a9f093e9e4ae2b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrCooldown: 0
-  Cooldown: 1
   Projectile: {fileID: 5881107877085235842, guid: db3dbc912eb2548ba97f859fae24217b, type: 3}
+  selfType: 0
