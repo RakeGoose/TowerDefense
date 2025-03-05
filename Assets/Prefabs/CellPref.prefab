@@ -100,8 +100,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isGround: 0
   hasTower: 0
-  BaseColor: {r: 1, g: 1, b: 1, a: 0}
-  SelectColor: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 0}
+  BaseColor: {r: 1, g: 1, b: 1, a: 1}
+  SelectColor: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
+  ShopPref: {fileID: 8477492974734572131, guid: 41269516821bb4959b89fd5f338b6ce5, type: 3}
+  TowerPref: {fileID: 8799248276926757861, guid: 84388dfb502294118b3d7d8c491d3cf0, type: 3}
 --- !u!61 &119522950875209510
 BoxCollider2D:
   m_ObjectHideFlags: 0
