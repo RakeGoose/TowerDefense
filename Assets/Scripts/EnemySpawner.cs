@@ -41,7 +41,7 @@ public class EnemySpawner : MonoBehaviour
             GameObject tmpEnemy = Instantiate(enemyPrefab);
             tmpEnemy.transform.SetParent(gameObject.transform, false);
 
-            tmpEnemy.GetComponent<EnemyLogic>().selfEnemy = new Enemy(gcontroller.AllEnemies[Random.Range(0, gcontroller.AllEnemies.Count)]);
+            tmpEnemy.GetComponent<EnemyLogic>().selfEnemy = gcontroller.AllEnemies[Random.Range(0, gcontroller.AllEnemies.Count)];
 ;
             Transform startCellPos = LM.wayPoints[0].transform;
             Vector3 startPos = new Vector3(startCellPos.position.x + startCellPos.GetComponent<SpriteRenderer>().bounds.size.x / 2,

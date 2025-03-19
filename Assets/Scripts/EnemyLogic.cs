@@ -44,6 +44,7 @@ public class EnemyLogic : MonoBehaviour
             }
             else
             {
+                GameManagerScript.Instance.TakePlayerDamage();
                 Destroy(gameObject);
             }
         }
@@ -60,6 +61,7 @@ public class EnemyLogic : MonoBehaviour
         if(selfEnemy.Health <= 0)
         {
             GameManagerScript.Instance.points += 10;
+            GameManagerScript.Instance.PlayEnemyDieSound();
             Destroy(gameObject);
         }
     }

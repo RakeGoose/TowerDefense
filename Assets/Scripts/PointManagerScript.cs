@@ -8,8 +8,12 @@ public class GameManagerScript : MonoBehaviour
     public static GameManagerScript Instance;
     public GameObject Menu;
     public Text MoneyTxt;
-    public int points;
+    public Text LivesTxt;
+    public int points, livesCount;
     public bool canSpawn = false;
+
+    public AudioClip LoseSound;
+    public AudioClip EnemyDieSound;
 
     void Awake()
     {
@@ -20,6 +24,7 @@ public class GameManagerScript : MonoBehaviour
     void Update()
     {
         MoneyTxt.text = points.ToString();
+        LivesTxt.text = "LIVES: " + livesCount.ToString();
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -29,15 +34,6 @@ public class GameManagerScript : MonoBehaviour
 
     public void PlayBtn()
     {
-        foreach (cellScript cs in FindObjectsOfType<cellScript>())
-            Destroy(cs.gameObject);
-        foreach (TowerFireScript ts in FindObjectsOfType<TowerFireScript>())
-            Destroy(ts.gameObject);
-        foreach (EnemyLogic es in FindObjectsOfType<EnemyLogic>())
-            Destroy(es.gameObject);
-
-        points = 30;
-
         FindObjectOfType<LevelManager>().CreateLevel();
         FindObjectOfType<EnemySpawner>().spawnCount = 0;
         FindObjectOfType<EnemySpawner>().timeToSpawn = 4;
@@ -52,10 +48,49 @@ public class GameManagerScript : MonoBehaviour
 
     void ToMenu()
     {
+        PlayLoseSound();
+        FindObjectOfType<EnemySpawner>().StopAllCoroutines();
+        foreach (EnemyLogic es in FindObjectsOfType<EnemyLogic>())
+        {
+            es.StopAllCoroutines();
+            Destroy(es.gameObject);
+        }
+        foreach (TowerFireScript ts in FindObjectsOfType<TowerFireScript>())
+            Destroy(ts.gameObject);
+        foreach (cellScript cs in FindObjectsOfType<cellScript>())
+            Destroy(cs.gameObject);
+
+        points = 30;
+        livesCount = 20;
+
         Menu.SetActive(true);
         canSpawn = false;
 
         if(FindObjectsOfType<ShopLogic>().Length > 0)
             Destroy(FindObjectOfType<ShopLogic>().gameObject);
+    }
+
+    public void TakePlayerDamage()
+    {
+        if(livesCount > 1)
+        {
+            livesCount--;
+        }
+        else
+        {
+            ToMenu();
+        }
+    }
+
+    public void PlayLoseSound()
+    {
+        GetComponent<AudioSource>().clip = LoseSound;
+        GetComponent<AudioSource>().Play();
+    }
+
+    public void PlayEnemyDieSound()
+    {
+        GetComponent<AudioSource>().clip = EnemyDieSound;
+        GetComponent<AudioSource>().Play();
     }
 }

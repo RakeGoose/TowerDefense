@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tower
+public struct Tower
 {
     public string Name;
     public int type;
     public int Price;
-    public float range = 0;
-    public float Cooldown = 0;
-    public float currCooldown = 0;
+    public float range;
+    public float Cooldown;
+    public float currCooldown;
     public Sprite Spr;
 
     public Tower( string Name, int type, float range, float cd, int Price, string path)
@@ -20,10 +20,11 @@ public class Tower
         Cooldown = cd;
         this.Price = Price;
         Spr = Resources.Load<Sprite>(path);
+        currCooldown = 0;
     }
 }
 
-public class TowerProjectile
+public struct TowerProjectile
 {
     public float speed;
     public int damage;
@@ -37,7 +38,7 @@ public class TowerProjectile
     }
 }
 
-public class Enemy
+public struct Enemy
 {
     public float Health;
     public float Speed;
@@ -52,12 +53,6 @@ public class Enemy
         Spr = Resources.Load<Sprite>(path);
     }
 
-    public Enemy(Enemy other)
-    {
-        Health = other.Health;
-        StartSpeed = Speed = other.StartSpeed;
-        Spr = other.Spr;
-    }
 }
 
 public enum TowerType

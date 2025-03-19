@@ -62,6 +62,8 @@ public class TowerFireScript : MonoBehaviour
 
     void Shoot(Transform enemy)
     {
+        GetComponent<AudioSource>().Play();
+
         selfTower.currCooldown = selfTower.Cooldown;
 
         GameObject proj = Instantiate(Projectile);
