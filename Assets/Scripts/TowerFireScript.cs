@@ -5,7 +5,7 @@ using UnityEngine;
 public class TowerFireScript : MonoBehaviour
 {
     public GameObject Projectile;
-    Tower selfTower;
+    public Tower selfTower;
     public TowerType selfType;
     
     gameController gcontroller;

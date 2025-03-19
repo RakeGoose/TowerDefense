@@ -24,11 +24,12 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         CreateLevel();
-        LoadWaypoints();
     }
 
-    void CreateLevel()
+    public void CreateLevel()
     {
+        wayPoints.Clear();
+        firstCell = null;
         Vector3 worldVec = Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height, 0));
 
         for(int i = 0; i < fieldHeight; i++)
@@ -41,6 +42,7 @@ public class LevelManager : MonoBehaviour
 
                 CreateCell(isGround, spr, k, i, worldVec);
             }
+        LoadWaypoints();
     }
 
     void CreateCell(bool isGround, Sprite spr, int x, int y, Vector3 wV)

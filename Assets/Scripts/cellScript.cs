@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class cellScript : MonoBehaviour
 {
     public bool isGround;
-    public bool hasTower = false;
 
     public Color BaseColor;
     public Color SelectColor;
@@ -14,11 +13,15 @@ public class cellScript : MonoBehaviour
 
     public GameObject ShopPref;
     public GameObject TowerPref;
+    public GameObject DestroyPref;
+
+    public GameObject SelfTower;
 
     private void OnMouseEnter()
     {
-        if (!isGround && FindObjectsOfType<ShopLogic>().Length == 0)
-            if (!hasTower)
+        if (!isGround && FindObjectsOfType<ShopLogic>().Length == 0
+            && FindObjectsOfType<DestroyTower>().Length == 0)
+            if (!SelfTower)
                 GetComponent<SpriteRenderer>().color = SelectColor;
             else
                 GetComponent<SpriteRenderer>().color = DestroyColor;
@@ -32,13 +35,21 @@ public class cellScript : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if(!isGround && FindObjectsOfType<ShopLogic>().Length == 0)
+        if(!isGround && FindObjectsOfType<ShopLogic>().Length == 0
+            && GameManagerScript.Instance.canSpawn
+            && FindObjectsOfType<DestroyTower>().Length == 0)
         {
-            if (!hasTower)
+            if (!SelfTower)
             {
                 GameObject shopObj = Instantiate(ShopPref);
                 shopObj.transform.SetParent(GameObject.Find("Canvas").transform, false);
                 shopObj.GetComponent<ShopLogic>().selfCell = this;
+            }
+            else
+            {
+                GameObject towerDestroy = Instantiate(DestroyPref);
+                towerDestroy.transform.SetParent(GameObject.Find("Canvas").transform, false);
+                towerDestroy.GetComponent<DestroyTower>().SelfCell = this;
             }
         }
     }
@@ -53,7 +64,13 @@ public class cellScript : MonoBehaviour
 
         tmpTower.GetComponent<TowerFireScript>().selfType = (TowerType)tower.type;
 
-        hasTower = true;
+        SelfTower = tmpTower;
         FindObjectOfType<ShopLogic>().CloseShop();
+    }
+
+    public void DestroyTower()
+    {
+        GameManagerScript.Instance.points += (SelfTower.GetComponent<TowerFireScript>().selfTower.Price / 2);
+        Destroy(SelfTower);
     }
 }

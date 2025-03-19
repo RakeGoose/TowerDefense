@@ -9,7 +9,7 @@ public class EnemySpawner : MonoBehaviour
     gameController gcontroller;
 
     public float timeToSpawn = 4;
-    int spawnCount = 0;
+    public int spawnCount = 0;
 
     public GameObject enemyPrefab;
 
@@ -20,13 +20,16 @@ public class EnemySpawner : MonoBehaviour
 
     void Update()
     {
-        if (timeToSpawn <= 0)
+        if (GameManagerScript.Instance.canSpawn)
         {
-            StartCoroutine(SpawnEnemy(spawnCount + 1));
-            timeToSpawn = 4;
-        }
+            if (timeToSpawn <= 0)
+            {
+                StartCoroutine(SpawnEnemy(spawnCount + 1));
+                timeToSpawn = 4;
+            }
 
-        timeToSpawn -= Time.deltaTime;
+            timeToSpawn -= Time.deltaTime;
+        }
     }
 
     IEnumerator SpawnEnemy(int enemyCount)

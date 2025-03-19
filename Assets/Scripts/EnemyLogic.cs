@@ -59,7 +59,7 @@ public class EnemyLogic : MonoBehaviour
     {
         if(selfEnemy.Health <= 0)
         {
-            PointManagerScript.Instance.points += 10;
+            GameManagerScript.Instance.points += 10;
             Destroy(gameObject);
         }
     }

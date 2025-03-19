@@ -37,10 +37,10 @@ public class ShopItemScript : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(PointManagerScript.Instance.points >= selfTower.Price)
+        if(GameManagerScript.Instance.points >= selfTower.Price)
         {
             selfCell.BuildTower(selfTower);
-            PointManagerScript.Instance.points -= selfTower.Price;
+            GameManagerScript.Instance.points -= selfTower.Price;
         }
     }
 
