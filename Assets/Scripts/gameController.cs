@@ -44,13 +44,15 @@ public struct Enemy
     public float Speed;
     public float StartSpeed;
     public Sprite Spr;
+    public RuntimeAnimatorController AnimController;
 
-    public Enemy(float health, float speed, string path)
+    public Enemy(float health, float speed, string path, string animPath)
     {
         Health = health;
         StartSpeed = Speed = speed;
 
         Spr = Resources.Load<Sprite>(path);
+        AnimController = Resources.Load<RuntimeAnimatorController>(animPath);
     }
 
 }
@@ -75,7 +77,7 @@ public class gameController : MonoBehaviour
         AllProjectiles.Add(new TowerProjectile(7, 10, "ProjectilesSprites/FireProjectile"));
         AllProjectiles.Add(new TowerProjectile(7, 15, "ProjectilesSprites/FreezeProjectile"));
 
-        AllEnemies.Add(new Enemy(30, 3, "EnemySprites/Enemy1"));
-        AllEnemies.Add(new Enemy(20, 5, "EnemySprites/Enemy2"));
+        AllEnemies.Add(new Enemy(30, 3, "EnemySprites/Enemy1", "Animations/Enemy1Animation/Enemy1Controller"));
+        AllEnemies.Add(new Enemy(20, 5, "EnemySprites/Enemy2", "Animations/Enemy2Animation/Enemy2Controller"));
     }
 }

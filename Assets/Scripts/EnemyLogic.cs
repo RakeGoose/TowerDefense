@@ -9,12 +9,26 @@ public class EnemyLogic : MonoBehaviour
 
     int wayIndex = 0;
     public Enemy selfEnemy;
+    Animator animator;
+    Vector2 lastPosition;
+    bool isDead = false;
 
     private void Start()
     {
         GetWaypoints();
 
         GetComponent<SpriteRenderer>().sprite = selfEnemy.Spr;
+
+        animator = GetComponent<Animator>();
+        if(animator != null && selfEnemy.AnimController != null)
+        {
+            animator.runtimeAnimatorController = selfEnemy.AnimController;
+            animator.SetInteger("Direction", 3);
+        }
+        Debug.Log("AnimatorController = " + selfEnemy.AnimController);
+
+
+        lastPosition = transform.position;
     }
 
     void Update()
@@ -29,10 +43,33 @@ public class EnemyLogic : MonoBehaviour
 
     private void Move()
     {
+        if (isDead)
+        {
+            return;
+        }
+
         Transform currWayPoint = wayPoints[wayIndex].transform;
         Vector3 currWayPos = new Vector3(currWayPoint.position.x + currWayPoint.GetComponent<SpriteRenderer>().bounds.size.x / 2, currWayPoint.position.y - currWayPoint.GetComponent<SpriteRenderer>().bounds.size.y / 2);
 
         Vector3 dir = currWayPos - transform.position;
+
+        if(Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+        {
+            transform.localScale = new Vector3(dir.x > 0 ? -1 : 1, 1, 1);
+        }
+
+        if(animator != null)
+        {
+            Vector2 moveDir = dir.normalized;
+            if(Mathf.Abs(moveDir.x) > Mathf.Abs(moveDir.y))
+            {
+                animator.SetInteger("Direction", moveDir.x > 0 ? 1 : 0);
+            }
+            else
+            {
+                animator.SetInteger("Direction", moveDir.y > 0 ? 2 : 3);
+            }
+        }
 
         transform.Translate(dir.normalized * Time.deltaTime * selfEnemy.Speed);
 
@@ -48,6 +85,7 @@ public class EnemyLogic : MonoBehaviour
                 Destroy(gameObject);
             }
         }
+        lastPosition = transform.position;
     }
 
     public void TakeDamage(float damage)
@@ -58,11 +96,21 @@ public class EnemyLogic : MonoBehaviour
 
     void CheckIsAlive()
     {
-        if(selfEnemy.Health <= 0)
+        if(selfEnemy.Health <= 0 && !isDead)
         {
+            isDead = true;
             GameManagerScript.Instance.points += 10;
             GameManagerScript.Instance.PlayEnemyDieSound();
-            Destroy(gameObject);
+
+            if(animator != null)
+            {
+                animator.SetBool("IsDead", true);
+                StartCoroutine(WaitAndDestroy(animator.GetCurrentAnimatorStateInfo(0).length));
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
     }
 
@@ -78,6 +126,12 @@ public class EnemyLogic : MonoBehaviour
         selfEnemy.Speed -= slowValue;
         yield return new WaitForSeconds(duration);
         selfEnemy.Speed = selfEnemy.StartSpeed;
+    }
+
+    IEnumerator WaitAndDestroy(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Destroy(gameObject);
     }
 
     public void AOEDamage(float range, float damage)
