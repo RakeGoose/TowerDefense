@@ -29,12 +29,14 @@ public struct TowerProjectile
     public float speed;
     public int damage;
     public Sprite Spr;
+    public RuntimeAnimatorController AnimController;
 
-    public TowerProjectile(float speed, int dmg, string path)
+    public TowerProjectile(float speed, int dmg, string path, string animPath)
     {
         this.speed = speed;
         damage = dmg;
         Spr = Resources.Load<Sprite>(path);
+        AnimController = Resources.Load<RuntimeAnimatorController>(animPath);
 
     }
 }
@@ -75,8 +77,8 @@ public class gameController : MonoBehaviour
         AllTowers.Add(new Tower("FireTower", 0, 2, .5f, 10, "TowerSprites/FireTower"));
         AllTowers.Add(new Tower("FreezeTower", 1, 5, 1.5f, 20, "TowerSprites/FreezeTower"));
 
-        AllProjectiles.Add(new TowerProjectile(7, 10, "ProjectilesSprites/FireProjectile"));
-        AllProjectiles.Add(new TowerProjectile(7, 15, "ProjectilesSprites/FreezeProjectile"));
+        AllProjectiles.Add(new TowerProjectile(7, 10, "ProjectilesSprites/FireProjectile", "Animations/ProjectileAnimControllers/FireAnimation/FireProjectileController"));
+        AllProjectiles.Add(new TowerProjectile(7, 15, "ProjectilesSprites/FreezeProjectile", "Animations/ProjectileAnimControllers/FreezeAnimation/FreezeProjectileController"));
 
         AllEnemies.Add(new Enemy(30, 3, "EnemySprites/Enemy1", "Animations/Enemy1Animation/Enemy1Controller"));
         AllEnemies.Add(new Enemy(20, 5, "EnemySprites/Enemy2", "Animations/Enemy2Animation/Enemy2Controller"));

@@ -17,6 +17,12 @@ public class TowerFireProjectile : MonoBehaviour
         selfProjectile = gcontroller.AllProjectiles[selfTower.type];
 
         GetComponent<SpriteRenderer>().sprite = selfProjectile.Spr;
+
+        Animator anim = GetComponent<Animator>();
+        if(anim != null && selfProjectile.AnimController != null)
+        {
+            anim.runtimeAnimatorController = selfProjectile.AnimController;
+        }
     }
 
     void Update()
@@ -33,14 +39,19 @@ public class TowerFireProjectile : MonoBehaviour
     {
         if (target != null)
         {
+
+            Vector2 dir = target.position - transform.position;
+
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, 0, angle);
+
             if (Vector2.Distance(transform.position, target.position) < .1f)
             {
                 Hit();
             }
             else
             {
-                Vector2 dir = target.position - transform.position;
-                transform.Translate(dir.normalized * Time.deltaTime * selfProjectile.speed);
+                transform.Translate(Vector3.right * Time.deltaTime * selfProjectile.speed);
             }
         }
         else
