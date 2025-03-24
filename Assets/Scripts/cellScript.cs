@@ -66,6 +66,7 @@ public class cellScript : MonoBehaviour
 
         SelfTower = tmpTower;
         FindObjectOfType<ShopLogic>().CloseShop();
+        GameManagerScript.Instance.PlayPlaceTowerSound();
     }
 
     public void DestroyTower()

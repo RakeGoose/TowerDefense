@@ -151,4 +151,16 @@ public class EnemyLogic : MonoBehaviour
             es.TakeDamage(damage);
         }
     }
+
+    private void OnDestroy()
+    {
+        if (GameManagerScript.Instance != null && GameManagerScript.Instance.canSpawn)
+        {
+            EnemySpawner spawner = FindObjectOfType<EnemySpawner>();
+            if (spawner != null)
+            {
+                spawner.OnEnemyKilled();
+            }
+        }
+    }
 }
