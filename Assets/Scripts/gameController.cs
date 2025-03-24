@@ -35,6 +35,7 @@ public struct TowerProjectile
         this.speed = speed;
         damage = dmg;
         Spr = Resources.Load<Sprite>(path);
+
     }
 }
 
